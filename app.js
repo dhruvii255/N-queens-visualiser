@@ -1,22 +1,21 @@
 'use strict'
+
+// Accessing DOM elements in app.js
 const numberbox = document.getElementById("numberbox");
 const slider = document.getElementById("slider");
 const progressBar = document.getElementById("progress-bar")
 const playButton = document.getElementById('play-button');
 const pauseButton = document.getElementById("pause-button");
 
+// Queen-icon to be added in the board
 const queen = '<i class="fas fa-chess-queen" style="color:#000"></i>';
-
 let n, speed, tempSpeed, q, Board = 0;
-// Board = 0;
 
 // Creating array for all the possible arrangements of the N-Queen
 let array = [0, 2, 1, 1, 3, 11, 5, 41, 93];
 
 // Used to store the state of the boards;
 let pos = {};
-// let position = {};
-
 
 // Setting the slider value onSlide
 speed = (100 - slider.value) * 10;
@@ -27,10 +26,11 @@ slider.oninput = function () {
     speed = (100 - speed) * 10;
 }
 
+
 class Queen {
     constructor() {
         this.position = Object.assign({}, pos);
-        // this.Board = 0;
+        // uuid is unique identifier of queen
         this.uuid = [];
     }
 
@@ -49,7 +49,7 @@ class Queen {
         const currentRow = table.firstChild.childNodes[r];
         const currentColumn = currentRow.getElementsByTagName("td")[col];
         currentColumn.innerHTML = queen;
-        // currentColumn.style.backgroundColor = "#FF9F1C";
+        
         await q.delay();
 
         // Checking the queen in the same column
@@ -117,6 +117,8 @@ class Queen {
     }
 
     solveQueen = async (board, r, n) => {
+
+        //boundary-condition for the last element of board
         if (r == n) {
             ++Board;
             let table = document.getElementById(`table-${this.uuid[Board]}`);
@@ -130,11 +132,9 @@ class Queen {
 
         for (let i = 0; i < n; ++i) {
             await q.delay();
-            // console.log("outside:" + board);
             await q.clearColor(board);
             if (await q.isValid(board, r, i, n)) {
                 await q.delay();
-                // console.log("inside:" + board)
                 await q.clearColor(board);
                 let table = document.getElementById(`table-${this.uuid[board]}`);
                 let row = table.firstChild.childNodes[r];
@@ -158,6 +158,8 @@ class Queen {
         }
     }
 }
+
+// N-queen execution will start on playButton click
 
 playButton.onclick = async function visualise() {
     const chessBoard = document.getElementById("n-queen-board");
@@ -192,11 +194,12 @@ playButton.onclick = async function visualise() {
     //Adding boards to the Div
     if (chessBoard.childElementCount === 0) {
         for (let i = 0; i < array[n]; ++i) {
+
+            //Pushing a unique random number in q uuid array
             q.uuid.push(Math.random());
             let div = document.createElement('div');
             let table = document.createElement('table');
             let header = document.createElement('h4');
-            // div.setAttribute("id", `div-${100 + uuid[i]}`)
             header.innerHTML = `Board ${i + 1} `
             table.setAttribute("id", `table-${q.uuid[i]}`);
             header.setAttribute("id", `paragraph-${i}`);
@@ -222,5 +225,7 @@ playButton.onclick = async function visualise() {
         }
         await q.clearColor(k);
     }
+
+    // Calling actual solution
     await q.nQueen();
 };
